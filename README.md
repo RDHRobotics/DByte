@@ -9,6 +9,36 @@
 - [Credits](#credits)
 
 ---
+USB D-Byte is a compact and powerful USB device that emulates a keyboard—just like the USB Rubber Ducky and other BadUSB tools. What sets it apart is its sleek design, ease of use, and advanced features that make payload deployment faster, smarter, and more flexible.
+## Key Features of USB D-Byte
+
+- **Plug & Play Script Deployment**  
+  Simply drag and drop your payloads—no need for SD cards or WiFi.
+
+- **Dual Mode Operation**  
+  Effortlessly switch between **Attack Mode** and **Setup Mode**.
+
+- **USB Mass Storage Support**  
+  Recognized as a USB flash drive for easy access and file management.
+
+- **Advanced Scripting Functions**  
+  New powerful commands to enhance payload flexibility and control.
+
+- **Multi-Language Keyboard Support**  
+  Compatible with a wide range of international keyboard layouts.
+
+- **HID Emulation**  
+  Acts as a USB keyboard and mouse, including boot keyboard support for BIOS-level access.
+
+- **Custom USB Identity**  
+  Easily modify VID, PID, serial number, manufacturer name, and more.
+
+- **Fully Open-Source**  
+  Source code and firmware available for modification and customization.
+
+- **Built-in USB-A Connector**  
+  No adapters required—just plug directly into any USB-A port.
+
 
 ## Specs USB D-Byte
 * Dimensions: 38mm x 16.5mm x 6.5mm

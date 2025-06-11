@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>USB D-Byte Documentation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Roboto', sans-serif;
+      background: #f5f6fa;
+      color: #222;
+    }
+    .navbar {
+      display: flex;
+      align-items: center;
+      background: #fff;
+      border-bottom: 1px solid #e0e0e0;
+      height: 56px;
+      padding: 0 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .navbar .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .navbar .logo img {
+      height: 44px;
+      width: 44px;
+      border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      background: #fff;
+      object-fit: contain;
+    }
+    .navbar .brand {
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: #1976d2;
+      letter-spacing: 1px;
+    }
+    .burger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      margin-left: auto;
+      background: none;
+      border: none;
+      cursor: pointer;
+      z-index: 200;
+    }
+    .burger span {
+      height: 3px;
+      width: 26px;
+      background: #1976d2;
+      margin: 4px 0;
+      border-radius: 2px;
+      transition: 0.3s;
+      display: block;
+    }
+    .container {
+      display: flex;
+      min-height: 100vh;
+    }
+    .sidebar {
+      width: 260px;
+      background: #fff;
+      border-right: 1px solid #e0e0e0;
+      padding: 24px 0 24px 0;
+      box-shadow: 2px 0 8px rgba(0,0,0,0.03);
+      position: sticky;
+      top: 56px;
+      height: calc(100vh - 56px);
+      transition: left 0.3s;
+      z-index: 150;
+    }
+    .sidebar h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin: 0 0 24px 32px;
+      color: #1976d2;
+      letter-spacing: 1px;
+    }
+    .nav-link, .submenu-link {
+      display: block;
+      padding: 10px 32px;
+      text-decoration: none;
+      color: #1976d2;
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: background 0.2s;
+      cursor: pointer;
+    }
+    .nav-link:hover, .submenu-link:hover {
+      background: #e3f2fd;
+    }
+    .submenu {
+      margin-left: 16px;
+      border-left: 2px solid #e3f2fd;
+      padding-left: 8px;
+      display: none;
+    }
+    .submenu.open {
+      display: block;
+    }
+    .menu-toggle {
+      background: none;
+      border: none;
+      color: #1976d2;
+      font-size: 1rem;
+      padding: 10px 32px;
+      width: 100%;
+      text-align: left;
+      cursor: pointer;
+      outline: none;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+    .menu-toggle:hover {
+      background: #e3f2fd;
+    }
+    .content {
+      flex: 1;
+      padding: 40px 32px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      padding: 32px;
+      margin-bottom: 32px;
+    }
+    h1, h2, h3 {
+      color: #1976d2;
+      margin-top: 0;
+    }
+    h1 { font-size: 2rem; }
+    h2 { font-size: 1.3rem; margin-top: 32px; }
+    h3 { font-size: 1.1rem; margin-top: 24px; }
+    ul, ol { margin: 16px 0 16px 24px; }
+    code, pre {
+      background: #f3f3f3;
+      color: #c7254e;
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 0.98em;
+    }
+    pre {
+      display: block;
+      padding: 16px;
+      overflow-x: auto;
+      margin: 16px 0;
+      background: #f3f3f3;
+      color: #222;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 16px 0;
+      background: #fafbfc;
+    }
+    th, td {
+      border: 1px solid #e0e0e0;
+      padding: 8px 12px;
+      text-align: left;
+    }
+    th {
+      background: #e3f2fd;
+      color: #1976d2;
+      font-weight: 500;
+    }
+    img {
+      max-width: 100%;
+      border-radius: 8px;
+      margin: 16px 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    /* Responsive styles */
+    @media (max-width: 900px) {
+      .container { flex-direction: column; }
+      .sidebar {
+        display: none;
+        position: fixed;
+        left: 0;
+        top: 56px;
+        width: 85vw;
+        min-width: 180px;
+        max-width: 320px;
+        height: calc(100vh - 56px);
+        z-index: 200;
+        background: #fff;
+        box-shadow: 2px 0 16px rgba(0,0,0,0.12);
+        transition: transform 0.3s;
+        transform: translateX(-100%);
+      }
+      .sidebar.open {
+        display: block;
+        transform: translateX(0);
+      }
+      .content {
+        padding: 24px 8px;
+        max-width: 100vw;
+      }
+      .burger {
+        display: flex;
+      }
+      body.sidebar-open {
+        overflow: hidden;
+      }
+    }
+    @media (max-width: 600px) {
+      .navbar {
+        padding: 0 8px;
+      }
+      .navbar .logo img {
+        height: 50px;
+        width: 50px;
+      }
+      .content {
+        padding: 12px 2vw;
+      }
+      .card {
+        padding: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <div class="logo">
+      <img src="/src/img/logo.png" alt="Company Logo" />
+      <span class="brand">RDH Robotics</span>
+    </div>
+    <button class="burger" id="burger-btn" aria-label="Open Menu" onclick="toggleSidebar()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+  <div class="container">
+    <nav class="sidebar" id="sidebar">
+      <h2>Documentation</h2>
+      <a class="nav-link" href="#about" onclick="closeSidebarOnMobile()">About</a>
+      <a class="nav-link" href="#specs" onclick="closeSidebarOnMobile()">Specs USB D-Byte</a>
+      <button class="menu-toggle" onclick="toggleMenu('scripting-menu')">Scripting ▼</button>
+      <div id="scripting-menu" class="submenu">
+        <a class="submenu-link" href="#basics" onclick="closeSidebarOnMobile()">Basics</a>
+        <a class="submenu-link" href="#functions" onclick="closeSidebarOnMobile()">Functions</a>
+        <a class="submenu-link" href="#keys" onclick="closeSidebarOnMobile()">Keys</a>
+        <a class="submenu-link" href="#mouse" onclick="closeSidebarOnMobile()">Mouse</a>
+      </div>
+            <a class="nav-link" href="#preferences" onclick="closeSidebarOnMobile()">Preferences</a>
+
+      <a class="nav-link" href="#credits" onclick="closeSidebarOnMobile()">Credits</a>
+    </nav>
+    <main class="content">
+      <div class="card" id="about">
+        <h1>USB D-Byte</h1>
+        <img src="/src/img/USBDByte2.jpeg" alt="USB D-Byte">
+        <p>
+          USB D-Byte is a compact and powerful USB device that emulates a keyboard—just like the USB Rubber Ducky and other BadUSB tools. What sets it apart is its sleek design, ease of use, and advanced features that make payload deployment faster, smarter, and more flexible.
+        </p>
+        <h2>Key Features</h2>
+        <ul>
+          <li><b>Plug & Play Script Deployment:</b> Simply drag and drop your payloads—no need for SD cards or WiFi.</li>
+          <li><b>Dual Mode Operation:</b> Effortlessly switch between <b>Attack Mode</b> and <b>Setup Mode</b>.</li>
+          <li><b>USB Mass Storage Support:</b> Recognized as a USB flash drive for easy access and file management.</li>
+          <li><b>Advanced Scripting Functions:</b> New powerful commands to enhance payload flexibility and control.</li>
+          <li><b>Multi-Language Keyboard Support:</b> Compatible with a wide range of international keyboard layouts.</li>
+          <li><b>HID Emulation:</b> Acts as a USB keyboard and mouse, including boot keyboard support for BIOS-level access.</li>
+          <li><b>Custom USB Identity:</b> Easily modify VID, PID, serial number, manufacturer name, and more.</li>
+          <li><b>Fully Open-Source:</b> Source code and firmware available for modification and customization.</li>
+          <li><b>Built-in USB-A Connector:</b> No adapters required—just plug directly into any USB-A port.</li>
+        </ul>
+      </div>
+
+      <div class="card" id="specs">
+        <h1>Specs USB D-Byte</h1>
+        <img src="/src/img/USBDByte4.jpeg" width='500px' alt="USB D-Byte">
+        <ul>
+          <li>Dimensions: 38mm x 16.5mm x 6.5mm</li>
+          <li>Dual-core 133 MHz 32-bit CPU</li>
+          <li>4/8/16 MB SPI flash</li>
+          <li>2 Position Mode Switch (Attack & Setup)</li>
+          <li>USB-A plug</li>
+          <li>Reset & boot button</li>
+        </ul>
+      </div>
+
+      <!-- Scripting Section -->
+      <div class="card" id="basics">
+        <h1>Scripting: Basics</h1>
+        <p>
+          USB D-Byte's script language is compatible with Ducky Script (1.0). However, some functions and keys were added or expanded.
+          You can find a great Ducky Script quick reference at
+          <a href="https://docs.hak5.org/hak5-usb-rubber-ducky/ducky-script-quick-reference" target="_blank">docs.hak5.org</a>.
+        </p>
+        <h2>Basic Rules</h2>
+        <ul>
+          <li>A single space separates the keys</li>
+          <li>All keys as part of the same line get pressed and released simultaneously</li>
+          <li>To write text, use the <code>STRING</code> function</li>
+          <li>Upper and lower case matters!</li>
+        </ul>
+        <table>
+          <tr><th>Example</th><th>Explanation</th></tr>
+          <tr><td><code>WINDOWS R</code></td><td>Press the Windows key and the R key simultaneously</td></tr>
+          <tr><td><code>STRING Hello World</code></td><td>Write "Hello World"</td></tr>
+        </table>
+        <h2>Example Script</h2>
+        <pre>REM Hello World Example Script
+DEFAULTDELAY 200
+DELAY 1000
+GUI r
+STRING notepad
+ENTER
+DELAY 1000
+STRING Hello World!
+</pre>
+        <table>
+          <tr><th>Line</th><th>Explanation</th></tr>
+          <tr><td><code>REM This is a comment</code></td><td>Comment something.</td></tr>
+          <tr><td><code>DEFAULTDELAY 200</code></td><td>Set the default delay between each line to 200 milliseconds.</td></tr>
+          <tr><td><code>DELAY 1000</code></td><td>Wait 1 second.</td></tr>
+          <tr><td><code>GUI r</code></td><td>Press the Windows key and the R key simultaneously to open the run window.</td></tr>
+          <tr><td><code>STRING notepad</code></td><td>Type "notepad".</td></tr>
+          <tr><td><code>ENTER</code></td><td>Press enter key to launch the Windows Notepad application.</td></tr>
+          <tr><td><code>DELAY 1000</code></td><td>Wait 1 second.</td></tr>
+          <tr><td><code>STRING Hello World!</code></td><td>Type "Hello World!" into the newly opened notepad window.</td></tr>
+        </table>
+      </div>
+
+      <div class="card" id="functions">
+        <h1>Scripting: Functions</h1>
+        <table>
+          <tr><th>Command</th><th>Example</th><th>Description</th></tr>
+          <tr><td><code>#</code> or <code>REM</code></td><td><code># Hello World!</code></td><td>Comment</td></tr>
+          <tr><td><code>DEFAULTDELAY</code> or <code>DEFAULT_DELAY</code></td><td><code>DEFAULTDELAY 200</code></td><td>Time in milliseconds between every command</td></tr>
+          <tr><td><code>DELAY</code></td><td><code>DELAY 1000</code></td><td>Delay in milliseconds</td></tr>
+          <tr><td><code>STRING</code></td><td><code>STRING Hello World!</code></td><td>Types the following text</td></tr>
+          <tr><td><code>STRINGLN</code></td><td><code>STRINGLN Hello World!</code></td><td>Like STRING but presses enter at the end</td></tr>
+          <tr><td><code>REPEAT</code> or <code>REPLAY</code></td><td><code>REPEAT 3</code></td><td>Repeats the previous line n times</td></tr>
+        </table>
+
+        <h2>Keyboard Layout</h2>
+        <p>
+          <b>Tip:</b> You can also change the default keyboard layout in the <a href="#preferences">preferences.json</a>. That way, you don't have to use <code>LOCALE</code> in your script.<br>
+          Use <code>LOCALE</code> to change the keyboard layout. This is necessary for everyone who's not using the US keyboard.<br>
+          Otherwise, your BadUSB might type the wrong characters.
+        </p>
+        <pre>LOCALE DE
+STRING Gänsefüßchen
+</pre>
+
+        <h3>Available Keyboard Layouts</h3>
+        <table>
+          <tr><th>Region</th><th>Standard Layout</th><th>Mac Layout</th><th>Note</th></tr>
+          <tr><td>Belgium 🇧🇪</td><td>BE</td><td>BE_MAC</td><td></td></tr>
+          <tr><td>Bulgaria 🇧🇬</td><td>BG</td><td>BG_MAC</td><td></td></tr>
+          <tr><td>Canada 🇨🇦</td><td>CA-CM, CA-FR</td><td>CA-FR_MAC</td><td></td></tr>
+          <tr><td>Switzerland 🇨🇭</td><td>CH-DE, CH-FR</td><td>CH-DE_MAC, CH-FR_MAC</td><td></td></tr>
+          <tr><td>Czech Republic 🇨🇿</td><td>CZ</td><td>CZ_MAC</td><td></td></tr>
+          <tr><td>Germany 🇩🇪</td><td>DE</td><td>DE_MAC</td><td></td></tr>
+          <tr><td>Denmark 🇩🇰</td><td>DK</td><td>DK_MAC</td><td></td></tr>
+          <tr><td>Estonia 🇪🇪</td><td>EE</td><td>EE_MAC</td><td></td></tr>
+          <tr><td>Spain 🇪🇸</td><td>ES</td><td>ES_MAC</td><td></td></tr>
+          <tr><td>Latin-America 🌎</td><td>ES-LA</td><td>ES-LA_MAC</td><td></td></tr>
+          <tr><td>Finland 🇫🇮</td><td>FI</td><td>FI_MAC</td><td></td></tr>
+          <tr><td>France 🇫🇷</td><td>FR</td><td>FR_MAC</td><td></td></tr>
+          <tr><td>United Kingdom 🇬🇧</td><td>GB</td><td>GB_MAC</td><td></td></tr>
+          <tr><td>Greece 🇬🇷</td><td>GR</td><td>GR_MAC</td><td></td></tr>
+          <tr><td>Croatia 🇭🇷</td><td>HR</td><td>HR_MAC</td><td>Since v1.2.1</td></tr>
+          <tr><td>Hungary 🇭🇺</td><td>HU</td><td>HU_MAC</td><td></td></tr>
+          <tr><td>Ireland 🇮🇪</td><td>IE</td><td>-</td><td></td></tr>
+          <tr><td>India 🇮🇳</td><td>IN</td><td>IN_MAC</td><td></td></tr>
+          <tr><td>Iceland 🇮🇸</td><td>IS</td><td>IS_MAC</td><td></td></tr>
+          <tr><td>Italy 🇮🇹</td><td>IT</td><td>IT_MAC</td><td></td></tr>
+          <tr><td>Latvia 🇱🇻</td><td>LT</td><td>LT_MAC</td><td></td></tr>
+          <tr><td>Lithuania 🇱🇹</td><td>LV</td><td>LV_MAC</td><td></td></tr>
+          <tr><td>Netherlands 🇳🇱</td><td>NL</td><td>NL_MAC</td><td></td></tr>
+          <tr><td>Norway 🇳🇴</td><td>NO</td><td>NO_MAC</td><td></td></tr>
+          <tr><td>Poland 🇵🇱</td><td>PL</td><td>PL_MAC</td><td></td></tr>
+          <tr><td>Brazil 🇧🇷</td><td>PT-BR</td><td>PT-BR_MAC</td><td></td></tr>
+          <tr><td>Portugal 🇵🇹</td><td>PT</td><td>PT_MAC</td><td></td></tr>
+          <tr><td>Romania 🇷🇴</td><td>RO</td><td>RO_MAC</td><td></td></tr>
+          <tr><td>Russia 🇷🇺</td><td>RU</td><td>RU_MAC</td><td></td></tr>
+          <tr><td>Sweden 🇸🇪</td><td>SE</td><td>SE_MAC</td><td></td></tr>
+          <tr><td>Slovenia 🇸🇮</td><td>SI</td><td>SI_MAC</td><td></td></tr>
+          <tr><td>Slovakia 🇸🇰</td><td>SK</td><td>SK_MAC</td><td></td></tr>
+          <tr><td>Turkey 🇹🇷</td><td>TR</td><td>TR_MAC</td><td></td></tr>
+          <tr><td>Ukraine 🇺🇦</td><td>UA</td><td>UA_MAC</td><td></td></tr>
+          <tr><td>United States 🇺🇸</td><td>US</td><td>US_MAC</td><td></td></tr>
+        </table>
+
+        <h2>Multi-Line Comments</h2>
+        <p>If you have a lot to say, you can use multi-line comments using <code>###</code>:</p>
+        <pre>###
+The quick brown 
+fox jumps over 
+the lazy dog
+###</pre>
+
+        <h2>Large Strings</h2>
+        <p>For longer texts, use <code>LSTRING_BEGIN</code> and <code>LSTRING_END</code>. Everything between those two commands, including linebreaks, gets typed out:</p>
+        <pre>LSTRING_BEGIN
+The quick brown 
+fox jumps over 
+the lazy dog
+LSTRING_END</pre>
+
+        <h2>Loops</h2>
+        <p>To repeat one or more lines, you can use <code>LOOP_BEGIN</code> and <code>LOOP_END</code>, which works just like a for-loop:</p>
+        <pre>LOOP_BEGIN 3
+STRING Hello 
+DELAY 1000
+STRINGLN World!
+LOOP_END</pre>
+
+        <h2>Imports</h2>
+        <p>With <code>IMPORT</code>, you can start running another script from within a script! This is particularly useful if you want to split your script into multiple files for better readability - instead of having one gigantic script.</p>
+        <pre>IMPORT second_script.txt</pre>
+
+        <h2>LED</h2>
+        <p>Control the onboard LED with the <code>LED</code> function.<br>
+        You can either set the color (<code>R</code>, <code>G</code>, or <code>B</code>) and mode (<code>SOLID</code>, <code>SLOW</code>, <code>FAST</code>, or <code>OFF</code>):</p>
+        <pre>LED R SOLID
+LED G SLOW
+LED B FAST
+</pre>
+        <p>Or you can set a specific RGB color value (0-255):</p>
+        <pre>LED 42 13 37</pre>
+        <p>And optionally, you can also set a blink interval in milliseconds (r,g,b, blink):</p>
+        <pre>LED 42 13 37 500</pre>
+
+        <h2>Custom Keycodes</h2>
+        <p>
+          The <code>KEYCODE</code> function sends specified keycodes to the target computer. You can use it to press any key or combination possible. 
+          This is particularly useful if a key is not specified in the script language.<br>
+          This example presses shift and a, resulting in an "A":
+        </p>
+        <pre>KEYCODE 0x02 0x04</pre>
+        <p>
+          The first argument specifies the modifiers (like shift, ctrl, or alt). The second argument is a key; you can specify up to 6 keys.<br>
+          Values can be in decimal or hexadecimal:<br>
+          <code>KEYCODE modifier key1 [key2] [key3] [key4] [key5] [key6]</code>
+        </p>
+      </div>
+
+      <div class="card" id="keys">
+        <h1>Scripting: Keys</h1>
+        <h2>Standard Keys</h2>
+        <p><code>a</code> - <code>z</code>, <code>A</code> - <code>Z</code>, <code>0</code> - <code>9</code>, <code>F1</code> - <code>F12</code></p>
+        <h2>Modifier Keys</h2>
+        <ul>
+          <li><code>CTRL</code> or <code>CONTROL</code></li>
+          <li><code>SHIFT</code></li>
+          <li><code>ALT</code></li>
+          <li><code>GUI</code> or <code>WINDOWS</code> or <code>COMMAND</code></li>
+        </ul>
+        <h2>Other Keys</h2>
+        <ul>
+          <li><code>ENTER</code></li>
+          <li><code>MENU</code> or <code>APP</code></li>
+          <li><code>DELETE</code></li>
+          <li><code>HOME</code></li>
+          <li><code>INSERT</code></li>
+          <li><code>PAGEUP</code></li>
+          <li><code>PAGEDOWN</code></li>
+          <li><code>UP</code> or <code>UPARROW</code></li>
+          <li><code>DOWN</code> or <code>DOWNARROW</code></li>
+          <li><code>LEFT</code> or <code>LEFTARROW</code></li>
+          <li><code>RIGHT</code> or <code>RIGHTARROW</code></li>
+          <li><code>TAB</code></li>
+          <li><code>END</code></li>
+          <li><code>ESC</code> or <code>ESCAPE</code></li>
+          <li><code>SPACE</code></li>
+          <li><code>PAUSE</code> or <code>BREAK</code></li>
+          <li><code>CAPSLOCK</code></li>
+          <li><code>NUMLOCK</code></li>
+          <li><code>PRINTSCREEN</code></li>
+          <li><code>SCROLLLOCK</code></li>
+        </ul>
+        <h2>Numpad Keys</h2>
+        <ul>
+          <li><code>NUM_0</code> - <code>NUM_9</code></li>
+          <li><code>NUM_ASTERIX</code></li>
+          <li><code>NUM_ENTER</code></li>
+          <li><code>NUM_MINUS</code></li>
+          <li><code>NUM_DOT</code></li>
+          <li><code>NUM_PLUS</code></li>
+        </ul>
+      </div>
+
+      <div class="card" id="mouse">
+        <h1>Scripting: Mouse</h1>
+        <table>
+          <tr><th>Command</th><th>Example</th><th>Description</th></tr>
+          <tr><td><code>MOVE x y</code> or <code>MOUSE x y</code></td><td><code>MOVE 100 0</code></td><td>Move the mouse cursor</td></tr>
+          <tr><td><code>CLICK button</code> or <code>MOUSE_CLICK button</code></td><td><code>CLICK 1</code></td><td>Click a mouse button</td></tr>
+          <tr><td><code>PRESS button</code> or <code>MOUSE_PRESS button</code></td><td><code>PRESS 2</code></td><td>Keep pressing a mouse button</td></tr>
+          <tr><td><code>RELEASE button</code> or <code>MOUSE_RELEASE button</code></td><td><code>RELEASE 2</code></td><td>Release a mouse button</td></tr>
+          <tr><td><code>SCROLL v h</code> or <code>MOUSE_SCROLL v h</code></td><td><code>SCROLL -10 0</code></td><td>Scroll vertically or horizontally</td></tr>
+        </table>
+        <h2>Mouse Buttons</h2>
+        <table>
+          <tr><th>Button</th><th>Description</th></tr>
+          <tr><td>0</td><td>Left button</td></tr>
+          <tr><td>1</td><td>Right button</td></tr>
+          <tr><td>2</td><td>Middle button</td></tr>
+          <tr><td>3</td><td>Backward button</td></tr>
+          <tr><td>4</td><td>Forward button</td></tr>
+        </table>
+      </div>
+
+      <!-- Preferences Section: move here, after scripting cards and before credits -->
+      <div class="card" id="preferences">
+        <h1>Preferences</h1>
+        <h2>1.2 preferences.json</h2>
+        <p>
+          The <code>preferences.json</code> file lets you configure the default behavior of your USB D-Byte device. Place this file in the root directory of the device's storage. The device will read these preferences on startup.
+        </p>
+        <pre>{
+
+  "$schema": "https://raw.githubusercontent.com/RDHRobotics/D-Byte/refs/heads/main/schema.json",
+  "enable_msc": false,
+  "enable_led": true,
+  "enable_hid": true,
+  "vid": "16D0",
+  "pid": "11A4",
+  "version": "0100",
+  "serial": "1337",
+  "manufacturer": "RDH Robotics",
+  "product": "USB D-Byte",
+  "default_layout": "US",
+  "default_delay": 5,
+  "main_script": "main_script.txt",
+  "attack_color": [
+    128,
+    0,
+    0,
+    0
+  ],
+  "setup_color": [
+    0,
+    0,
+    20,
+    0
+  ],
+  "idle_color": [
+    0,
+    30,
+    0,
+    0
+  ],
+  "disable_capslock": true,
+  "run_on_indicator": false,
+  "initial_delay": 1000
+
+}</pre>
+
+        <table>
+          <tr>
+            <th>Setting</th>
+            <th>Default Value</th>
+            <th>Explanation</th>
+          </tr>
+          <tr><td><code>enable_msc</code></td><td>false</td><td>Enable USB mass storage (USB drive) in attack mode</td></tr>
+          <tr><td><code>enable_led</code></td><td>true</td><td>Enable RGB LED</td></tr>
+          <tr><td><code>enable_hid</code></td><td>true</td><td>Enable HID in setup mode</td></tr>
+          <tr><td><code>vid</code></td><td>16D0</td><td>USB Vendor ID</td></tr>
+          <tr><td><code>pid</code></td><td>11A4</td><td>USB Product ID</td></tr>
+          <tr><td><code>version</code></td><td>0100</td><td>USB Product Revision (0100 =&gt; 1.00)</td></tr>
+          <tr><td><code>serial</code></td><td>1337</td><td>USB serial number descriptor</td></tr>
+          <tr><td><code>manufacturer</code></td><td>RDH Robotics</td><td>USB manufacturer descriptor</td></tr>
+          <tr><td><code>product</code></td><td>USB D-Byte</td><td>USB product descriptor</td></tr>
+          <tr><td><code>default_layout</code></td><td>US</td><td>Default Keyboard Layout (<a href="#functions">see all available layouts</a>)</td></tr>
+          <tr><td><code>default_delay</code></td><td>5</td><td>Default delay between each line</td></tr>
+          <tr><td><code>main_script</code></td><td>main_script.txt</td><td>Name of your BadUSB script</td></tr>
+          <tr><td><code>attack_color</code></td><td>[128,0,0,0]</td><td>LED color for attack mode</td></tr>
+          <tr><td><code>setup_color</code></td><td>[0,0,20,0]</td><td>LED color for setup mode</td></tr>
+          <tr><td><code>idle_color</code></td><td>[0,30,0,0]</td><td>LED color for finished attack</td></tr>
+          <tr><td><code>disable_capslock</code></td><td>true</td><td>(*) Turn off capslock before starting attack</td></tr>
+          <tr><td><code>run_on_indicator</code></td><td>false</td><td>(*) Start script when the user presses capslock, numlock, or another indicator key</td></tr>
+          <tr><td><code>initial_delay</code></td><td>1000</td><td>Startup delay</td></tr>
+        </table>
+
+        <p>
+          <b>Tip:</b> If you want to use a different keyboard layout, set <code>default_layout</code> here so you don't need to specify it in every script.
+        </p>
+      </div>
+
+      <div class="card" id="credits">
+        <h1>Credits</h1>
+        <p>
+          This project is based on <a href="https://github.com/SpacehuhnTech/USBNova" target="_blank">USB Nova</a> by SpacehuhnTech.<br>
+          Firmware and hardware have been modified under the terms of the MIT and CERN-OHL-P-2.0 licenses.
+        </p>
+        <p>Thank you to the open-source community for making innovation accessible to all.</p>
+      </div>
+    </main>
+  </div>
+  <script>
+    // Burger and sidebar toggle
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      sidebar.classList.toggle('open');
+      document.body.classList.toggle('sidebar-open');
+    }
+    function closeSidebarOnMobile() {
+      if (window.innerWidth <= 900) {
+        document.getElementById('sidebar').classList.remove('open');
+        document.body.classList.remove('sidebar-open');
+      }
+    }
+    // Collapsible submenu
+    function toggleMenu(id) {
+      var el = document.getElementById(id);
+      el.classList.toggle('open');
+    }
+    // Close sidebar when resizing up
+    window.addEventListener('resize', function() {
+      if (window.innerWidth > 900) {
+        document.getElementById('sidebar').classList.remove('open');
+        document.body.classList.remove('sidebar-open');
+      }
+    });
+    // Optional: Close sidebar when clicking outside on mobile
+    document.addEventListener('click', function(e) {
+      const sidebar = document.getElementById('sidebar');
+      const burger = document.getElementById('burger-btn');
+      if (
+        window.innerWidth <= 900 &&
+        sidebar.classList.contains('open') &&
+        !sidebar.contains(e.target) &&
+        !burger.contains(e.target)
+      ) {
+        sidebar.classList.remove('open');
+        document.body.classList.remove('sidebar-open');
+      }
+    });
+  </script>
+</body>
+</html>

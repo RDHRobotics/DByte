@@ -9,6 +9,8 @@
 - [Credits](#credits)
 
 ---
+<img src='/src/img/USBDByte2.jpeg' width='500px' alt='USB D-Byte' />
+<br />
 USB D-Byte is a compact and powerful USB device that emulates a keyboard—just like the USB Rubber Ducky and other BadUSB tools. What sets it apart is its sleek design, ease of use, and advanced features that make payload deployment faster, smarter, and more flexible.
 ## Key Features of USB D-Byte
 
@@ -41,9 +43,12 @@ USB D-Byte is a compact and powerful USB device that emulates a keyboard—just 
 
 
 ## Specs USB D-Byte
+<img src='/src/img/USBDByte4.jpeg' width='500px' alt='USB D-Byte' />
+<br />
+
 * Dimensions: 38mm x 16.5mm x 6.5mm
 * Dual-core 133 MHz 32-bit CPU
-* 16 MB SPI flash (15 MB accessible via USB)
+* 4/8/16 MB SPI flash
 * 2 Position Mode Switch (Attack & Setup)
 * USB-A plug
 * Reset & boot button
